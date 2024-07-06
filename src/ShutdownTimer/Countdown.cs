@@ -94,7 +94,7 @@ namespace ShutdownTimer
                 WindowState = FormWindowState.Minimized;
                 timerUIHideMenuItem.Enabled = false;
                 timerUIShowMenuItem.Enabled = true;
-                notifyIcon.BalloonTipText = "Timer started. The power action will be executed in " + CountdownTimeSpan.Hours + " hours, " + CountdownTimeSpan.Minutes + " minutes and " + CountdownTimeSpan.Seconds + " seconds.";
+                notifyIcon.BalloonTipText = "Đã bắt đầu hẹn giờ.  Hành động sẽ được thực hiện trong " + CountdownTimeSpan.Hours + " giờ, " + CountdownTimeSpan.Minutes + " phút và " + CountdownTimeSpan.Seconds + " giây.";
                 notifyIcon.ShowBalloonTip(10000);
                 Hide();
             }
@@ -236,11 +236,11 @@ namespace ShutdownTimer
             else if (!allowClose)
             {
                 e.Cancel = true;
-                ExceptionHandler.LogEvent("[Countdown] Asking user for confirmation to exit and cancel the timer");
-                string caption = "Are you sure?";
-                string message = "Do you really want to cancel the timer?";
+                ExceptionHandler.LogEvent("[Countdown] Yêu cầu người dùng xác nhận thoát và hủy bộ hẹn giờ");
+                string caption = "Bạn coa chắc không?";
+                string message = "Bạn có thực sự muốn hủy hẹn giờ không?";
                 DialogResult question = MessageBox.Show(message, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (question == DialogResult.Yes) { ExceptionHandler.LogEvent("[Countdown] User wanted to exit"); ExitApplication(); }
+                if (question == DialogResult.Yes) { ExceptionHandler.LogEvent("[Countdown] Người dùng muốn thoát""); ExitApplication(); }
             }
             // allowClose == true is not handled and if ignoreClose == false, the application will exit
 
@@ -256,29 +256,29 @@ namespace ShutdownTimer
         /// </summary>
         private void ExitApplication()
         {
-            ExceptionHandler.LogEvent("[Countdown] Trying to exit the application");
+            ExceptionHandler.LogEvent("[Countdown] Đang cố gắng thoát khỏi ứng dụng");
 
             if (lockState == 1)
             {
-                ExceptionHandler.LogEvent("[Countdown] Attempt canceled due to password protection");
-                if (UnlockUIByPassword(true)) { ExceptionHandler.LogEvent("[Countdown] Password protection passed, restarting exit sequence..."); ExitApplication(); }
+                ExceptionHandler.LogEvent("[Countdown] Đã hủy nỗ lực do bảo vệ bằng mật khẩu");
+                if (UnlockUIByPassword(true)) { ExceptionHandler.LogEvent("[Countdown] Bảo vệ bằng mật khẩu đã được thông qua, đang khởi động lại trình tự thoát..."); ExitApplication(); }
             }
             else
             {
-                ExceptionHandler.LogEvent("[Countdown] Exiting application...");
+                ExceptionHandler.LogEvent("[Countdown] Đang thoát ứng dụng...");
 
                 ignoreClose = false;
                 allowClose = true;
-                ExceptionHandler.LogEvent("[Countdown] Stopping clocks");
+                ExceptionHandler.LogEvent("[Countdown] Đang dừng đồng hồ");
                 stopwatch.Stop();
                 refreshTimer.Stop();
-                ExceptionHandler.LogEvent("[Countdown] Clearing EXECUTION_STATE flags");
+                ExceptionHandler.LogEvent("[Countdown] Đang xóa cờ EXECUTION_STATE");
                 ExecutionState.SetThreadExecutionState(ExecutionState.EXECUTION_STATE.ES_CONTINUOUS); // Clear EXECUTION_STATE flags to allow the system to go to sleep if it's tired
-                ExceptionHandler.LogEvent("[Countdown] Confirming application halt to user");
-                string caption1 = "Timer canceled";
-                string message1 = "Your timer was canceled successfully!\nThe application will now close.";
+                ExceptionHandler.LogEvent("[Countdown] Xác nhận tạm dừng ứng dụng đối với người dùng");
+                string caption1 = "Hẹn giờ đã bị hủy";
+                string message1 = "Bộ hẹn giờ của bạn đã được hủy thành công!\n Ứng dụng sẽ đóng ngay bây giờ.";
                 MessageBox.Show(message1, caption1, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ExceptionHandler.LogEvent("[Countdown] Exiting...");
+                ExceptionHandler.LogEvent("[Countdown] Đang thoát...");
                 Application.Exit();
             }
         }
@@ -288,7 +288,7 @@ namespace ShutdownTimer
         /// </summary>
         private void RestartApplication()
         {
-            ExceptionHandler.LogEvent("[Countdown] Trying to restart the application");
+            ExceptionHandler.LogEvent("[Countdown] Đang cố gắng khởi động lại ứng dụng");
             if (lockState == 1)
             {
                 ExceptionHandler.LogEvent("[Countdown] Attempt canceled due to password protection");
@@ -346,16 +346,16 @@ namespace ShutdownTimer
                 stopwatch.Stop();
                 paused = true;
                 refreshTimer.Enabled = false;
-                contextMenuStrip.Items[0].Text = "Resume";
-                titleLabel.Text = Action + " Timer (paused)";
+                contextMenuStrip.Items[0].Text = "Tiếp tục";
+                titleLabel.Text = Action + " Bộ hẹn giờ (đã tạm dừng)";
             }
             else
             {
                 stopwatch.Start();
                 paused = false;
                 refreshTimer.Enabled = true;
-                contextMenuStrip.Items[0].Text = "Pause";
-                titleLabel.Text = Action + " Timer";
+                contextMenuStrip.Items[0].Text = "Tạm dừng";
+                titleLabel.Text = Action + " Bộ hẹn giờ";
             }
         }
 
@@ -364,11 +364,11 @@ namespace ShutdownTimer
         /// </summary>
         private void UpdateTimer()
         {
-            ExceptionHandler.LogEvent("[Countdown] Countdown update requested");
+            ExceptionHandler.LogEvent("[Countdown] Yêu cầu cập nhật đếm ngược");
             using (var form = new InputBox())
             {
-                form.Title = "Countdown Update";
-                form.Message = "Enter new time for the countdown in the format of HH:mm:ss or HH:mm";
+                form.Title = "Cập nhật Đếm ngược";
+                form.Message = "Nhập thời gian mới để đếm ngược ở định dạng HH:mm:ss hoặc HH:mm";
                 TopMost = false;
                 var result = form.ShowDialog();
                 TopMost = !SettingsProvider.Settings.DisableAlwaysOnTop;
